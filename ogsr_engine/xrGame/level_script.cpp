@@ -303,6 +303,14 @@ CUIWindow* GetInventoryWindow()
         return nullptr;
     return (CUIWindow*)pGameSP->InventoryMenu;
 }
+
+void update_belt_slots_count()
+{
+    CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
+    if (pGameSP)
+        pGameSP->InventoryMenu->UpdateOutfit();
+}
+
 CUIWindow* GetTradeWindow()
 {
     CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
@@ -1102,6 +1110,7 @@ void CLevel::script_register(lua_State* L)
             def("get_inventory_wnd", &GetInventoryWindow), def("get_talk_wnd", &GetTalkWindow), def("get_trade_wnd", &GetTradeWindow), def("get_pda_wnd", &GetPdaWindow),
             def("get_car_body_wnd", &GetCarBodyWindow), def("get_second_talker", &GetSecondTalker), def("get_car_body_target", &GetCarBodyTarget),
             def("get_change_level_wnd", &GetUIChangeLevelWnd),
+            def("update_belt_slots_count", &update_belt_slots_count),
 
             def("ray_query", &PerformRayQuery),
 
