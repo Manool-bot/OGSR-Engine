@@ -766,10 +766,13 @@ void CUICarBodyWnd::ActivatePropertiesBox()
     if (hasMany)
         m_pUIPropertiesBox->AddItem("st_move_all", (void*)33, INVENTORY_MOVE_ACTION);
 
-    m_pUIPropertiesBox->AddItem("st_drop", NULL, INVENTORY_DROP_ACTION);
+    if (!Core.Features.test(xrCore::Feature::off_carbody_drop))
+    {
+        m_pUIPropertiesBox->AddItem("st_drop", NULL, INVENTORY_DROP_ACTION);
 
-    if (hasMany)
-        m_pUIPropertiesBox->AddItem("st_drop_all", (void*)33, INVENTORY_DROP_ACTION);
+        if (hasMany)
+            m_pUIPropertiesBox->AddItem("st_drop_all", (void*)33, INVENTORY_DROP_ACTION);
+    }
 
     if (b_show)
     {

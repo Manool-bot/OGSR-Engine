@@ -118,6 +118,7 @@ void InitConsole()
     CORE_FEATURE_SET(autoreload_wpn, "features");
     CORE_FEATURE_SET(no_progress_bar_animation, "features");
     CORE_FEATURE_SET(disable_dialog_break, "features");
+    CORE_FEATURE_SET(off_carbody_drop, "features");
 }
 
 void InitInput() { pInput = xr_new<CInput>(); }
