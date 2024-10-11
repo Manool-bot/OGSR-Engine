@@ -1441,6 +1441,11 @@ void CActor::ApplyArtefactEffects(ActorRestoreParams& r, CArtefact* artefact)
 {
     float k = (Core.Features.test(xrCore::Feature::af_zero_condition) && fis_zero(artefact->GetCondition())) ? 0.f : 1.f;
 
+    // Manool: радиацию и пси-здоровье всё-равно обрабатывать
+    float def_k = k;
+    if (inventory().AllowAfEffects == false)
+        k = 0.f;
+
     r.BleedingRestoreSpeed += artefact->m_fBleedingRestoreSpeed * k;
     r.HealthRestoreSpeed += artefact->m_fHealthRestoreSpeed * k;
     r.PowerRestoreSpeed += artefact->m_fPowerRestoreSpeed * k;
@@ -1456,17 +1461,17 @@ void CActor::ApplyArtefactEffects(ActorRestoreParams& r, CArtefact* artefact)
         if (Core.Features.test(xrCore::Feature::objects_radioactive))
         {
             if (artefact->PsyHealthRestoreSpeed() > 0)
-                r.PsyHealthRestoreSpeed += artefact->PsyHealthRestoreSpeed() * k;
+                r.PsyHealthRestoreSpeed += artefact->PsyHealthRestoreSpeed() * def_k;
         }
         else
         {
-            r.PsyHealthRestoreSpeed += artefact->PsyHealthRestoreSpeed() * k;
+            r.PsyHealthRestoreSpeed += artefact->PsyHealthRestoreSpeed() * def_k;
         }
     }
     if (Core.Features.test(xrCore::Feature::objects_radioactive))
     {
         if (artefact->RadiationRestoreSpeed() < 0)
-            r.RadiationRestoreSpeed += artefact->RadiationRestoreSpeed() * k;
+            r.RadiationRestoreSpeed += artefact->RadiationRestoreSpeed() * def_k;
     }
     else
     {
@@ -1474,12 +1479,12 @@ void CActor::ApplyArtefactEffects(ActorRestoreParams& r, CArtefact* artefact)
         {
             float new_rs = HitArtefactsOnBelt(artefact->RadiationRestoreSpeed(), ALife::eHitTypeRadiation, true);
             if (new_rs > artefact->RadiationRestoreSpeed())
-                r.RadiationRestoreSpeed += new_rs * k;
+                r.RadiationRestoreSpeed += new_rs * def_k;
             else
-                r.RadiationRestoreSpeed += artefact->RadiationRestoreSpeed() * k;
+                r.RadiationRestoreSpeed += artefact->RadiationRestoreSpeed() * def_k;
         }
         else
-            r.RadiationRestoreSpeed += artefact->RadiationRestoreSpeed() * k;
+            r.RadiationRestoreSpeed += artefact->RadiationRestoreSpeed() * def_k;
     }
 }
 
@@ -1645,7 +1650,7 @@ float CActor::HitArtefactsOnBelt(float hit_power, ALife::EHitType hit_type, bool
         CArtefact* artefact = smart_cast<CArtefact*>(*it);
         if (artefact)
         {
-            if (!Core.Features.test(xrCore::Feature::af_zero_condition) || !fis_zero(artefact->GetCondition()))
+            if ((!Core.Features.test(xrCore::Feature::af_zero_condition) || !fis_zero(artefact->GetCondition())) && inventory().AllowAfEffects != false)
             {
                 res_hit_power_k += artefact->m_ArtefactHitImmunities.AffectHit(1.0f, hit_type);
                 _af_count += 1.0f;
@@ -1659,7 +1664,7 @@ float CActor::HitArtefactsOnBelt(float hit_power, ALife::EHitType hit_type, bool
         CArtefact* helmet = smart_cast<CArtefact*>(helm);
         if (helmet)
         {
-            if (!Core.Features.test(xrCore::Feature::af_zero_condition) || !fis_zero(helmet->GetCondition()))
+            if ((!Core.Features.test(xrCore::Feature::af_zero_condition) || !fis_zero(helmet->GetCondition())) && inventory().AllowAfEffects != false)
             {
                 res_hit_power_k += helmet->m_ArtefactHitImmunities.AffectHit(1.0f, hit_type);
                 _af_count += 1.0f;

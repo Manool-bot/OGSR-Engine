@@ -539,8 +539,7 @@ float CInventoryOwner::ArtefactsAddWeight(bool first) const
     for (const auto& it : inventory().m_belt)
     {
         CArtefact* artefact = smart_cast<CArtefact*>(it);
-
-        if (artefact && (!Core.Features.test(xrCore::Feature::af_zero_condition) || !fis_zero(artefact->GetCondition())))
+        if ((artefact && (!Core.Features.test(xrCore::Feature::af_zero_condition) || !fis_zero(artefact->GetCondition()))) && inventory().AllowAfEffects != false)
             add_weight += first ? artefact->m_additional_weight : artefact->m_additional_weight2;
     }
     return add_weight;

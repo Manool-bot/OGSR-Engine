@@ -153,6 +153,7 @@ public:
     bool IsActiveSlotBlocked() const;
 
     // максимальный вес инвентаря
+    bool AllowAfEffects;
     float m_fMaxWeight;
 
 protected:
@@ -181,6 +182,7 @@ protected:
     // Максимальное кол-во объектов
     //на поясе
     u32 m_iMaxBelt;
+    int m_iMaxBeltCustom;
     // Максимальное расстояние на котором можно подобрать объект
     float m_fTakeDist;
 

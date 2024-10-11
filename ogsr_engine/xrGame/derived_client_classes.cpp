@@ -186,6 +186,8 @@ void CInventoryScript::script_register(lua_State* L)
 
         class_<CInventory>("CInventory")
             .def_readonly("max_belt", &CInventory::m_iMaxBelt)
+            .def_readwrite("max_belt_custom", &CInventory::m_iMaxBeltCustom)
+            .def_readwrite("allow_af_effects", &CInventory::AllowAfEffects)
             .def_readwrite("max_weight", &CInventory::m_fMaxWeight)
             .def_readwrite("take_dist", &CInventory::m_fTakeDist)
             .def_readonly("total_weight", &CInventory::m_fTotalWeight)

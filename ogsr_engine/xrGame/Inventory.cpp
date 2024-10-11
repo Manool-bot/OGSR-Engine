@@ -58,6 +58,8 @@ CInventory::CInventory()
     m_fTakeDist = pSettings->r_float("inventory", "take_dist");
     m_fMaxWeight = pSettings->r_float("inventory", "max_weight");
     m_iMaxBelt = pSettings->r_u32("inventory", "max_belt");
+    m_iMaxBeltCustom = -1;
+    AllowAfEffects = true;
 
     m_slots.resize(SLOTS_TOTAL);
 
@@ -1040,6 +1042,10 @@ bool CInventory::CanTakeItem(CInventoryItem* inventory_item) const
 
 u32 CInventory::BeltSlotsCount() const
 {
+    // Manool: приоритет скриптовой установке
+    if (m_iMaxBeltCustom > -1)
+        return m_iMaxBeltCustom;
+
     if (auto pActor = smart_cast<CActor*>(m_pOwner))
         if (auto outfit = pActor->GetOutfit())
             return outfit->get_artefact_count();
