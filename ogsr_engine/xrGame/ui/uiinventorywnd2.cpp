@@ -401,6 +401,10 @@ bool CUIInventoryWnd::OnItemDrop(CUICellItem* itm)
     switch (t_new)
     {
     case iwSlot: {
+
+        if (!AllowPutInSlot(itm))
+            return true;
+
         auto item = CurrentIItem();
 
         bool can_put = false;
@@ -483,6 +487,10 @@ bool CUIInventoryWnd::OnItemDbClick(CUICellItem* itm)
     break;
 
     case iwBag: {
+
+        if (!AllowPutInSlot(itm))
+            return true;
+
         // Пытаемся найти свободный слот из списка разрешенных.
         // Если его нету, то принудительно займет первый слот,
         // указанный в списке.
@@ -516,6 +524,22 @@ bool CUIInventoryWnd::OnItemRButtonClick(CUICellItem* itm)
     SetCurrentItem(itm);
     ActivatePropertiesBox();
     return false;
+}
+
+bool CUIInventoryWnd::AllowPutInSlot(CUICellItem* itm)
+{
+    bool allow_put = true;
+    auto item = (PIItem)itm->m_pData;
+    if (pSettings->line_exist("engine_callbacks", "actor_on_item_before_put_in_slot"))
+    {
+        std::string on_item_before_put_in_slot = pSettings->r_string("engine_callbacks", "actor_on_item_before_put_in_slot");
+        luabind::functor<bool> func;
+        if (ai().script_engine().functor(on_item_before_put_in_slot.c_str(), func))
+        {
+            allow_put = func(item->cast_game_object()->lua_game_object());
+        }
+    }
+    return allow_put;
 }
 
 CUIDragDropListEx* CUIInventoryWnd::GetSlotList(u8 slot_idx)

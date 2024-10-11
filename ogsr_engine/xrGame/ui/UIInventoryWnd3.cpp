@@ -59,18 +59,21 @@ void CUIInventoryWnd::ActivatePropertiesBox()
             {
                 if (!m_pInv->m_slots[slot].m_pIItem || m_pInv->m_slots[slot].m_pIItem != CurrentIItem())
                 {
-                    if (multi_slot && Core.Features.test(xrCore::Feature::slots_extend_menu))
+                    if (AllowPutInSlot(CurrentItem()))
                     {
-                        string128 full_action_text;
-                        strconcat(sizeof(full_action_text), full_action_text, "st_move_to_slot_", std::to_string(slot).c_str());
-                        UIPropertiesBox.AddItem(full_action_text, (void*)(__int64)slot, INVENTORY_TO_SLOT_ACTION);
-                        b_show = true;
-                    }
-                    else
-                    {
-                        UIPropertiesBox.AddItem("st_move_to_slot", NULL, INVENTORY_TO_SLOT_ACTION);
-                        b_show = true;
-                        break;
+                        if (multi_slot && Core.Features.test(xrCore::Feature::slots_extend_menu))
+                        {
+                            string128 full_action_text;
+                            strconcat(sizeof(full_action_text), full_action_text, "st_move_to_slot_", std::to_string(slot).c_str());
+                            UIPropertiesBox.AddItem(full_action_text, (void*)(__int64)slot, INVENTORY_TO_SLOT_ACTION);
+                            b_show = true;
+                        }
+                        else
+                        {
+                            UIPropertiesBox.AddItem("st_move_to_slot", NULL, INVENTORY_TO_SLOT_ACTION);
+                            b_show = true;
+                            break;
+                        }
                     }
                 }
             }

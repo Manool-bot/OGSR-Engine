@@ -119,6 +119,7 @@ protected:
     bool OnItemDbClick(CUICellItem* itm);
     bool OnItemSelected(CUICellItem* itm);
     bool OnItemRButtonClick(CUICellItem* itm);
+    bool AllowPutInSlot(CUICellItem* itm);
 
     CUIStatic UIProgressBack;
     CUIStatic UIProgressBack_rank;
