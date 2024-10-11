@@ -752,3 +752,12 @@ u32 CScriptGameObject::GetMeshCountHUD() const
     return 0;
 }
 /************************* End Add *************************************/
+
+void CScriptGameObject::SetObjectName(LPCSTR szName)
+{
+    CObject& obj = object();
+    obj.cName_set(szName);
+    auto* aobj = alife_object();
+    if (aobj)
+        aobj->set_name_replace(szName);
+}
