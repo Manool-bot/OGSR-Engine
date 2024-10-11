@@ -52,16 +52,20 @@ void CLevel::IR_OnMouseWheel(int direction)
     if (g_bDisableAllInput)
         return;
 
-    if (HUD().GetUI()->IR_OnMouseWheel(direction))
-        return;
     if (Device.Paused())
+        return;
+
+    if (Actor())
+        Actor()->callback(GameObject::eOnMouseWheel)(direction);
+
+    if (HUD().GetUI()->IR_OnMouseWheel(direction))
         return;
 
     if (game && Game().IR_OnMouseWheel(direction))
         return;
 
-    if (Actor())
-        Actor()->callback(GameObject::eOnMouseWheel)(direction);
+    // if (Actor())
+        // Actor()->callback(GameObject::eOnMouseWheel)(direction);
 
     if (HUD().GetUI()->MainInputReceiver())
         return;
