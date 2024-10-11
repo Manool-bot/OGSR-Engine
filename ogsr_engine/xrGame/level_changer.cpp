@@ -105,6 +105,7 @@ void CLevelChanger::shedule_Update(u32 dt)
 }
 
 extern bool g_block_all_except_movement;
+extern bool g_block_change_level;
 
 void CLevelChanger::feel_touch_new(CObject* tpObject)
 {
@@ -113,9 +114,9 @@ void CLevelChanger::feel_touch_new(CObject* tpObject)
     if (!l_tpActor->g_Alive())
         return;
 
-    if (m_SilentMode || g_block_all_except_movement)
+    if (m_SilentMode || g_block_all_except_movement || g_block_change_level)
     {
-        if (m_SilentMode == 2 || g_block_all_except_movement)
+        if (m_SilentMode == 2 || g_block_all_except_movement || g_block_change_level)
         {
             Fvector p, r;
             if (get_reject_pos(p, r))
@@ -126,6 +127,7 @@ void CLevelChanger::feel_touch_new(CObject* tpObject)
             else
             {
                 Msg("! [%s]: [%s] pt_move_if_reject not found: m_SilentMode[%u]", __FUNCTION__, cName().c_str(), m_SilentMode);
+                return;
             }
         }
         NET_Packet p;

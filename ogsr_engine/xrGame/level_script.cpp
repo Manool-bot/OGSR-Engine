@@ -510,12 +510,14 @@ void enable_input()
     GetUICursor()->SetUICursorPosition(pos);
 }
 
+bool g_block_change_level{};
 bool g_block_all_except_movement{};
 bool g_actor_allow_ladder{true};
 bool g_actor_allow_pda{true};
 
 void block_all_except_movement(bool b) { g_block_all_except_movement = b; }
 
+void block_change_level(bool b) { g_block_change_level = b; }
 bool only_movement_allowed() { return g_block_all_except_movement; }
 
 void set_actor_allow_ladder(bool b) { g_actor_allow_ladder = b; }
@@ -1084,6 +1086,7 @@ void CLevel::script_register(lua_State* L)
 
             def("disable_input", disable_input), def("enable_input", enable_input), 
 
+            def("block_change_level", block_change_level),
             def("only_allow_movekeys", block_all_except_movement), def("only_movekeys_allowed", only_movement_allowed),
 
             def("set_actor_allow_ladder", set_actor_allow_ladder), def("actor_ladder_allowed", actor_ladder_allowed),
