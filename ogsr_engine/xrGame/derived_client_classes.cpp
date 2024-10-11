@@ -446,7 +446,11 @@ void CWeaponScript::script_register(lua_State* L)
                   .def("switch_gl", &CWeaponMagazinedWGrenade::SwitchMode),
               class_<CMissile, CInventoryItemObject>("CMissile")
                   .def_readwrite("destroy_time", &CMissile::m_dwDestroyTime)
-                  .def_readwrite("destroy_time_max", &CMissile::m_dwDestroyTimeMax)];
+                  .def_readwrite("destroy_time_max", &CMissile::m_dwDestroyTimeMax),
+
+              class_<CWeaponAmmo, CInventoryItemObject>("CWeaponAmmo")
+                  .def_readwrite("current", &CWeaponAmmo::m_boxCurr)
+                  .def_readwrite("size", &CWeaponAmmo::m_boxSize)];
 }
 
 void CCustomMonsterScript::script_register(lua_State* L)

@@ -169,6 +169,7 @@ class_<CScriptGameObject> script_register_game_object3(class_<CScriptGameObject>
         .def("get_game_object", &CScriptGameObject::object)
         .def("get_alife_object", &CScriptGameObject::alife_object)
         .def("get_actor", &script_game_object_cast<CActorObject>)
+        .def("get_ammo", &script_game_object_cast<CWeaponAmmo>)
         .def("get_anomaly", &script_game_object_cast<CCustomZone>)
         .def("get_artefact", &script_game_object_cast<CArtefact>)
         .def("get_base_monster", &script_game_object_cast<CBaseMonster>)
