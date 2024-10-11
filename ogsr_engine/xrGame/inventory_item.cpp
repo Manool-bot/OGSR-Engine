@@ -96,6 +96,13 @@ void CInventoryItem::Load(LPCSTR section)
 
     m_slots_sect = READ_IF_EXISTS(pSettings, r_string, section, "slot", "");
     {
+        // Manool debug
+        luabind::functor<void> lua_function;
+        bool functor_exists = ai().script_engine().functor("_G.on_set_slot_item", lua_function);
+        if (functor_exists)
+            lua_function(section, m_slots_sect);
+        // Manool debug end
+
         char buf[16];
         const int count = _GetItemCount(m_slots_sect);
         if (count)

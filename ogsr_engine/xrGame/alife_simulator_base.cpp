@@ -249,6 +249,9 @@ void CALifeSimulatorBase::create(CSE_ALifeObject* object)
         register_object(dynamic_object, true);
 }
 
+// Manool debug
+#include "script_engine.h"
+// Manool debug end
 void CALifeSimulatorBase::release(CSE_Abstract* abstract, bool alife_query)
 {
 #ifdef DEBUG
@@ -257,6 +260,14 @@ void CALifeSimulatorBase::release(CSE_Abstract* abstract, bool alife_query)
         Msg("[LSS] Releasing object [%s][%s][%d][%x]", abstract->name_replace(), *abstract->s_name, abstract->ID, smart_cast<void*>(abstract));
     }
 #endif
+
+    // Manool debug
+    luabind::functor<void> lua_function;
+    bool functor_exists = ai().script_engine().functor("_G.on_release_script_callback", lua_function);
+    if (functor_exists)
+        lua_function(abstract);
+    // Manool debug end
+
     CSE_ALifeDynamicObject* object = objects().object(abstract->ID);
     VERIFY(object);
 

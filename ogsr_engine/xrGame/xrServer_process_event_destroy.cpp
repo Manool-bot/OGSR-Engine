@@ -38,7 +38,16 @@ void xrServer::Process_event_destroy(NET_Packet& P, ClientID sender, u32 time, u
         Msg("!SV:ge_destroy: [%d] not found on server", id_dest);
 #endif
         return;
+    }
+    // Manool debug
+    else
+    {
+        luabind::functor<void> lua_function;
+        bool functor_exists = ai().script_engine().functor("_G.on_release_client_callback", lua_function);
+        if (functor_exists)
+            lua_function(e_dest);
     };
+    // Manool debug end
 
     R_ASSERT(e_dest);
     xrClientData* c_dest = e_dest->owner; // клиент, чей юнит

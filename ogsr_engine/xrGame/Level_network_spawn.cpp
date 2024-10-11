@@ -114,6 +114,13 @@ void CLevel::g_sv_Spawn(CSE_Abstract* E)
     Msg("* CLIENT: Spawn: %s, ID=%d", *E->s_name, E->ID);
 #endif
 
+    // Manool debug
+    luabind::functor<void> lua_function;
+    bool functor_exists = ai().script_engine().functor("_G.on_client_spawn_callback", lua_function);
+    if (functor_exists)
+        lua_function(E);
+    // Manool debug end
+
     auto obj = Objects.net_Find(E->ID);
     if (obj && obj->getDestroy())
     {
