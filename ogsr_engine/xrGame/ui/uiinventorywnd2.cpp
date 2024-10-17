@@ -140,6 +140,34 @@ void CUIInventoryWnd::InitInventory()
             CUICellItem* itm = create_cell_item(_itm);
             m_pUIBIODetList->SetItem(itm);
         }
+
+        if (Core.Features.test(xrCore::Feature::nlc_quick_slots))
+        {
+            _itm = m_pInv->m_slots[SLOT_QUICK_ACCESS_0].m_pIItem;
+            if (_itm)
+            {
+                CUICellItem* itm = create_cell_item(_itm);
+                m_pUISlotQuickAccessList_0->SetItem(itm);
+            }
+            _itm = m_pInv->m_slots[SLOT_QUICK_ACCESS_1].m_pIItem;
+            if (_itm)
+            {
+                CUICellItem* itm = create_cell_item(_itm);
+                m_pUISlotQuickAccessList_1->SetItem(itm);
+            }
+            _itm = m_pInv->m_slots[SLOT_QUICK_ACCESS_2].m_pIItem;
+            if (_itm)
+            {
+                CUICellItem* itm = create_cell_item(_itm);
+                m_pUISlotQuickAccessList_2->SetItem(itm);
+            }
+            _itm = m_pInv->m_slots[SLOT_QUICK_ACCESS_3].m_pIItem;
+            if (_itm)
+            {
+                CUICellItem* itm = create_cell_item(_itm);
+                m_pUISlotQuickAccessList_3->SetItem(itm);
+            }
+        }
     }
 
     PIItem _outfit = m_pInv->m_slots[OUTFIT_SLOT].m_pIItem;
@@ -566,6 +594,13 @@ void CUIInventoryWnd::ClearAllLists()
         m_pUINightVisionList->ClearAll(true);
         m_pUIBIODetList->ClearAll(true);
         m_pUIBinocularList->ClearAll(true);
+    }
+    if (Core.Features.test(xrCore::Feature::nlc_quick_slots))
+    {
+        m_pUISlotQuickAccessList_0->ClearAll(true);
+        m_pUISlotQuickAccessList_1->ClearAll(true);
+        m_pUISlotQuickAccessList_2->ClearAll(true);
+        m_pUISlotQuickAccessList_3->ClearAll(true);
     }
 }
 

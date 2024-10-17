@@ -105,6 +105,11 @@ protected:
     CUIDragDropListEx* m_pUITorchList;
     CUIDragDropListEx* m_pUIBinocularList;
 
+    CUIDragDropListEx* m_pUISlotQuickAccessList_0;
+    CUIDragDropListEx* m_pUISlotQuickAccessList_1;
+    CUIDragDropListEx* m_pUISlotQuickAccessList_2;
+    CUIDragDropListEx* m_pUISlotQuickAccessList_3;
+
     // alpet: для индексированного доступа
     CUIDragDropListEx* m_slots_array[SLOTS_TOTAL];
 

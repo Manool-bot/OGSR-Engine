@@ -184,6 +184,33 @@ void CUIInventoryWnd::Init()
         m_pUITorchList->SetAutoDelete(true);
         xml_init.InitDragDropListEx(uiXml, "dragdrop_torch", 0, m_pUITorchList);
         BindDragDropListEnents(m_pUITorchList);
+
+        if (Core.Features.test(xrCore::Feature::nlc_quick_slots))
+        {
+            m_pUISlotQuickAccessList_0 = xr_new<CUIDragDropListEx>();
+            AttachChild(m_pUISlotQuickAccessList_0);
+            m_pUISlotQuickAccessList_0->SetAutoDelete(true);
+            xml_init.InitDragDropListEx(uiXml, "dragdrop_slot_quick_access_0", 0, m_pUISlotQuickAccessList_0);
+            BindDragDropListEnents(m_pUISlotQuickAccessList_0);
+
+            m_pUISlotQuickAccessList_1 = xr_new<CUIDragDropListEx>();
+            AttachChild(m_pUISlotQuickAccessList_1);
+            m_pUISlotQuickAccessList_1->SetAutoDelete(true);
+            xml_init.InitDragDropListEx(uiXml, "dragdrop_slot_quick_access_1", 0, m_pUISlotQuickAccessList_1);
+            BindDragDropListEnents(m_pUISlotQuickAccessList_1);
+
+            m_pUISlotQuickAccessList_2 = xr_new<CUIDragDropListEx>();
+            AttachChild(m_pUISlotQuickAccessList_2);
+            m_pUISlotQuickAccessList_2->SetAutoDelete(true);
+            xml_init.InitDragDropListEx(uiXml, "dragdrop_slot_quick_access_2", 0, m_pUISlotQuickAccessList_2);
+            BindDragDropListEnents(m_pUISlotQuickAccessList_2);
+
+            m_pUISlotQuickAccessList_3 = xr_new<CUIDragDropListEx>();
+            AttachChild(m_pUISlotQuickAccessList_3);
+            m_pUISlotQuickAccessList_3->SetAutoDelete(true);
+            xml_init.InitDragDropListEx(uiXml, "dragdrop_slot_quick_access_3", 0, m_pUISlotQuickAccessList_3);
+            BindDragDropListEnents(m_pUISlotQuickAccessList_3);
+        }
     }
 
     for (u8 i = 0; i < SLOTS_TOTAL; i++)
@@ -201,6 +228,14 @@ void CUIInventoryWnd::Init()
         m_slots_array[NIGHT_VISION_SLOT] = m_pUINightVisionList;
         m_slots_array[DETECTOR_SLOT] = m_pUIDetectorList;
         m_slots_array[TORCH_SLOT] = m_pUITorchList;
+    }
+
+    if (Core.Features.test(xrCore::Feature::nlc_quick_slots))
+    {
+        m_slots_array[SLOT_QUICK_ACCESS_0] = m_pUISlotQuickAccessList_0;
+        m_slots_array[SLOT_QUICK_ACCESS_1] = m_pUISlotQuickAccessList_1;
+        m_slots_array[SLOT_QUICK_ACCESS_2] = m_pUISlotQuickAccessList_2;
+        m_slots_array[SLOT_QUICK_ACCESS_3] = m_pUISlotQuickAccessList_3;
     }
 
     // pop-up menu

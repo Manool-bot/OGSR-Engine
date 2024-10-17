@@ -89,6 +89,11 @@ CInventory::CInventory()
     m_slots[BIODETECTOR_SLOT].m_bVisible = false;
     m_slots[DETECTOR_SLOT].m_bVisible = false; // KRodin: это очень важно! Слот для зп-стайл детекторов должен быть НЕ активируемым!
 
+    m_slots[SLOT_QUICK_ACCESS_0].m_bVisible = false;
+    m_slots[SLOT_QUICK_ACCESS_1].m_bVisible = false;
+    m_slots[SLOT_QUICK_ACCESS_2].m_bVisible = false;
+    m_slots[SLOT_QUICK_ACCESS_3].m_bVisible = false;
+
     for (u32 i = 0; i < m_slots.size(); ++i)
     {
         sprintf_s(temp, "slot_visible_%d", i + 1);
