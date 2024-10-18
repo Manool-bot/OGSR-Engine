@@ -63,7 +63,7 @@ static CUIMainIngameWnd* GetMainIngameWindow()
     return nullptr;
 }
 
-static CUIStatic* warn_icon_list[8]{};
+static CUIStatic* warn_icon_list[9]{};
 
 // alpet: для возможности внешнего контроля иконок (используется в NLC6 вместо типичных индикаторов). Никак не влияет на игру для остальных модов.
 static bool external_icon_ctrl = false;
@@ -109,6 +109,7 @@ CUIMainIngameWnd::CUIMainIngameWnd()
     warn_icon_list[ewiWound] = &UIWoundIcon;
     warn_icon_list[ewiStarvation] = &UIStarvationIcon;
     warn_icon_list[ewiPsyHealth] = &UIPsyHealthIcon;
+    warn_icon_list[ewiSleep] = &UISleepIcon;
     warn_icon_list[ewiInvincible] = &UIInvincibleIcon;
     warn_icon_list[ewiThirst] = &UIThirstIcon;
 }
@@ -212,6 +213,9 @@ void CUIMainIngameWnd::Init()
     xml_init.InitStatic(uiXml, "wound_static", 0, &UIWoundIcon);
     UIWoundIcon.Show(false);
 
+    xml_init.InitStatic(uiXml, "sleep_static", 0, &UISleepIcon);
+    UISleepIcon.Show(false);
+
     xml_init.InitStatic(uiXml, "invincible_static", 0, &UIInvincibleIcon);
     UIInvincibleIcon.Show(false);
 
@@ -224,6 +228,7 @@ void CUIMainIngameWnd::Init()
     constexpr const char* warningStrings[] = {
         "jammed",     "radiation", "wounds", "starvation",
         "fatigue", // PsyHealth ???
+        "sleep",
         "invincible", // Not used
         "thirst",
     };
@@ -236,7 +241,7 @@ void CUIMainIngameWnd::Init()
         const char* cfgRecord = pSettings->r_string("main_ingame_indicators_thresholds", warningStrings[static_cast<int>(i) - 1]);
         u32 count = _GetItemCount(cfgRecord);
 
-        char singleThreshold[8];
+        char singleThreshold[9];
         float f = 0;
         for (u32 k = 0; k < count; ++k)
         {
@@ -386,6 +391,7 @@ void CUIMainIngameWnd::Update()
                 if (m_pWeapon)
                     value = 1 - m_pWeapon->GetConditionToShow();
                 break;
+            case ewiSleep: value = 0; break;
             case ewiStarvation: value = 1 - m_pActor->conditions().GetSatiety(); break;
             case ewiThirst: value = 1 - m_pActor->conditions().GetThirst(); break;
             case ewiPsyHealth: value = 1 - m_pActor->conditions().GetPsyHealth(); break;
@@ -551,6 +557,10 @@ void CUIMainIngameWnd::SetWarningIconColor(EWarningIcons icon, const u32 cl)
             break;
     case ewiPsyHealth:
         SetWarningIconColor(&UIPsyHealthIcon, cl);
+        if (bMagicFlag)
+            break;
+    case ewiSleep:
+        SetWarningIconColor(&UISleepIcon, cl);
         if (bMagicFlag)
             break;
     case ewiInvincible:

@@ -74,6 +74,7 @@ protected:
     CUIStatic UIWoundIcon;
     CUIStatic UIStarvationIcon;
     CUIStatic UIPsyHealthIcon;
+    CUIStatic UISleepIcon;
     CUIStatic UIInvincibleIcon;
     CUIStatic UIThirstIcon;
     //	CUIStatic			UISleepIcon;
@@ -94,6 +95,7 @@ public:
         ewiWound,
         ewiStarvation,
         ewiPsyHealth,
+        ewiSleep,
         ewiInvincible,
         ewiThirst,
         //		ewiSleep,
