@@ -80,6 +80,10 @@ void CUIDragDropListEx::SetHighlightAllCells(bool b) { m_flags.set(flHighlightAl
 
 bool CUIDragDropListEx::GetHighlightAllCells() { return !!m_flags.test(flHighlightAllCells); }
 
+void CUIDragDropListEx::SetShowGrid(bool b) { m_flags.set(flShowGrid, b); }
+
+bool CUIDragDropListEx::GetShowGrid() { return !!m_flags.test(flShowGrid); }
+
 void CUIDragDropListEx::SendMessage(CUIWindow* pWnd, s16 msg, void* pData) { CUIWndCallback::OnEvent(pWnd, msg, pData); }
 
 void CUIDragDropListEx::Init(float x, float y, float w, float h)
@@ -482,6 +486,7 @@ CUICellContainer::CUICellContainer(CUIDragDropListEx* parent)
 {
     m_pParentDragDropList = parent;
     hShader->create("hud\\fog_of_war", "ui\\ui_grid");
+    hShader0->create("hud\\fog_of_war", "ui\\ui_grid_0");
     m_cellSpacing.set(0, 0);
 }
 
@@ -918,7 +923,10 @@ void CUICellContainer::Draw()
 
     UI()->PushScissor(clientArea);
 
-    UIRender->SetShader(*hShader);
+    if (m_pParentDragDropList->GetShowGrid())
+        UIRender->SetShader(*hShader);
+    else
+        UIRender->SetShader(*hShader0);
     UIRender->FlushPrimitive();
 
     // draw shown items in range
