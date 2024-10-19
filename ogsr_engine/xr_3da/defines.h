@@ -51,6 +51,7 @@ enum
     rsR4 = (1ul << 18ul),
 
     rsExclusiveMode = 1ul << 19ul,
+    rsDisableCamInert = 1ul << 20ul,
 };
 
 //. ENGINE_API extern	u32			psCurrentMode		;

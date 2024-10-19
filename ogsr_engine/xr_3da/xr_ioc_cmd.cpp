@@ -754,6 +754,7 @@ void CCC_Register()
 
     // Camera
     CMD4(CCC_Float, "cam_inert", &psCamInert, 0.0f, 0.99f);
+    CMD3(CCC_Mask, "disable_cam_inert", &psDeviceFlags, rsDisableCamInert);
     CMD2(CCC_Float, "cam_slide_inert", &psCamSlideInert);
 
     CMD1(CCC_r2, "renderer");

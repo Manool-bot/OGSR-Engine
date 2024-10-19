@@ -285,10 +285,15 @@ void CCameraManager::Update(const Fvector& P, const Fvector& D, const Fvector& N
     dbg_upd_frame = Device.dwFrame;
 #endif
     // camera
+
+    float psCamInertTmp = psCamInert;
+    if (psDeviceFlags.test(rsDisableCamInert))
+        psCamInertTmp = 0.0f;
+
     if (flags & CCameraBase::flPositionRigid)
         m_cam_info.p.set(P);
     else
-        m_cam_info.p.inertion(P, psCamInert);
+        m_cam_info.p.inertion(P, psCamInertTmp);
     if (flags & CCameraBase::flDirectionRigid)
     {
         m_cam_info.d.set(D);
@@ -296,8 +301,8 @@ void CCameraManager::Update(const Fvector& P, const Fvector& D, const Fvector& N
     }
     else
     {
-        m_cam_info.d.inertion(D, psCamInert);
-        m_cam_info.n.inertion(N, psCamInert);
+        m_cam_info.d.inertion(D, psCamInertTmp);
+        m_cam_info.n.inertion(N, psCamInertTmp);
     }
 
     // Normalize
