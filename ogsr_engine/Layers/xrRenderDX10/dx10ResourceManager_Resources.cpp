@@ -565,7 +565,7 @@ CTexture* CResourceManager::_CreateTexture(LPCSTR _Name)
     // DBG_VerifyTextures	();
     if (0 == xr_strcmp(_Name, "null"))
         return 0;
-    R_ASSERT(_Name && _Name[0]);
+    R_ASSERT3(_Name && _Name[0], "[%s]: _Name && _Name[0]: [%s]", __FUNCTION__, _Name);
 
     string_path Name;
     xr_strcpy(Name, _Name); //. andy if (strext(Name)) *strext(Name)=0;
