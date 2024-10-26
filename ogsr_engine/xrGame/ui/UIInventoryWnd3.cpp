@@ -163,24 +163,50 @@ void CUIInventoryWnd::ActivatePropertiesBox()
         }
     }
 
-    LPCSTR _action = nullptr;
+    u32 cnt = CurrentItem()->ChildsCount() + 1;
+    // если в ячейке 2 предмета, cnt = 2
+    if (cnt > 9)
+        cnt = 9;
+    PIItem iitm = (PIItem)CurrentItem()->m_pData;
 
-    if (pMedkit || pAntirad)
+    for (u32 i = 0; i < cnt; i++)
     {
-        _action = "st_use";
-    }
-    else if (pEatableItem)
-    {
-        if (pBottleItem)
-            _action = "st_drink";
-        else
-            _action = "st_eat";
-    }
+        LPCSTR _action = NULL;
 
-    if (_action)
-    {
-        UIPropertiesBox.AddItem(_action, NULL, INVENTORY_EAT_ACTION);
-        b_show = true;
+        if (i > 0)
+        {
+            CUICellItem* itm = CurrentItem()->Child((u32)(i - 1));
+            iitm = (PIItem)itm->m_pData;
+        }
+
+        if (pMedkit || pAntirad)
+        {
+            if (cnt > 1 && iitm)
+            {
+                luabind::functor<LPCSTR> func;
+                _action = "st_use";
+                if (ai().script_engine().functor("_G.caption_use", func))
+                {
+                    _action = func(i + 1, iitm->object().ID());
+                }
+            }
+            else
+                _action = "st_use";
+        }
+        else if (pEatableItem)
+        {
+            if (pBottleItem)
+                _action = "st_drink";
+            else
+                _action = "st_eat";
+            cnt = 0;
+        }
+
+        if (_action)
+        {
+            UIPropertiesBox.AddItem(_action, iitm, INVENTORY_EAT_ACTION);
+            b_show = true;
+        }
     }
 
     bool disallow_drop = (pOutfit && bAlreadyDressed);
@@ -251,7 +277,12 @@ void CUIInventoryWnd::ProcessPropertiesBoxClicked()
             DropCurrentItem(b_all);
         }
         break;
-        case INVENTORY_EAT_ACTION: EatItem(CurrentIItem()); break;
+        case INVENTORY_EAT_ACTION: {
+            void* itm = UIPropertiesBox.GetClickedItem()->GetData();
+            PIItem item = itm ? (PIItem)itm : CurrentIItem();
+            EatItem(item);
+        }
+        break;
         case INVENTORY_ATTACH_ADDON: AttachAddon((PIItem)(UIPropertiesBox.GetClickedItem()->GetData())); break;
         case INVENTORY_DETACH_SCOPE_ADDON: DetachAddon(*(smart_cast<CWeapon*>(CurrentIItem()))->GetScopeName()); break;
         case INVENTORY_DETACH_SILENCER_ADDON: DetachAddon(*(smart_cast<CWeapon*>(CurrentIItem()))->GetSilencerName()); break;
