@@ -9,7 +9,7 @@
 #include "../COMMON_AI/object_broker.h"
 #include "../COMMON_AI/LevelGameDef.h"
 
-ENGINE_API float ps_r_sunshafts_intensity = 0.0f;
+ENGINE_API float ps_r_sunshafts_intensity = 0.28f;
 ENGINE_API float puddles_drying = 2.f;
 ENGINE_API float puddles_wetting = 4.f;
 
