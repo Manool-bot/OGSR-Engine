@@ -45,6 +45,10 @@ CInventoryOwner::CInventoryOwner()
     m_tmp_active_slot_num = NO_ACTIVE_SLOT;
     m_need_osoznanie_mode = FALSE;
 
+    m_silent_take = (u16)-1;
+    m_silent_reject = (u16)-1;
+    m_transfer_flag = false;
+
     m_tmp_next_item_slot = NO_ACTIVE_SLOT;
 }
 
@@ -99,6 +103,9 @@ void CInventoryOwner::reinit()
     CAttachmentOwner::reinit();
     m_item_to_spawn = shared_str();
     m_ammo_in_box_to_spawn = 0;
+
+    m_silent_take = (u16)-1;
+    m_silent_reject = (u16)-1;
 }
 
 // call this after CGameObject::net_Spawn
@@ -283,11 +290,21 @@ void CInventoryOwner::renderable_Render()
     CAttachmentOwner::renderable_Render();
 }
 
+void CInventoryOwner::BeginTransfer() { m_transfer_flag = true; }
+
+void CInventoryOwner::EndTransfer()
+{
+    m_silent_take = (u16)-1;
+    m_silent_reject = (u16)-1;
+    m_transfer_flag = false;
+}
+
 void CInventoryOwner::OnItemTake(CInventoryItem* inventory_item)
 {
     CGameObject* object = smart_cast<CGameObject*>(this);
     VERIFY(object);
-    object->callback(GameObject::eOnItemTake)(inventory_item->object().lua_game_object());
+    if (m_silent_take != inventory_item->object().ID() || m_transfer_flag)
+        object->callback(GameObject::eOnItemTake)(inventory_item->object().lua_game_object());
 
     attach(inventory_item);
 
@@ -414,7 +431,8 @@ void CInventoryOwner::OnItemDrop(CInventoryItem* inventory_item)
 {
     CGameObject* object = smart_cast<CGameObject*>(this);
     VERIFY(object);
-    object->callback(GameObject::eOnItemDrop)(inventory_item->object().lua_game_object());
+    if (m_silent_reject != inventory_item->object().ID() || m_transfer_flag)
+        object->callback(GameObject::eOnItemDrop)(inventory_item->object().lua_game_object());
 
     detach(inventory_item);
 }

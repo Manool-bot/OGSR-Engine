@@ -177,7 +177,15 @@ protected:
     CCharacterInfo* m_pCharacterInfo;
     xr_string m_game_name;
 
+    // alpet: по предметам с такими id не будет вызываться скриптовой колбек
+    u16 m_silent_take;
+    u16 m_silent_reject;
+    bool m_transfer_flag;
+
 public:
+    virtual void BeginTransfer();
+    virtual void EndTransfer();
+
     virtual void renderable_Render();
     virtual void OnItemTake(CInventoryItem* inventory_item);
 

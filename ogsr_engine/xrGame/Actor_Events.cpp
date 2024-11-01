@@ -38,6 +38,8 @@ void CActor::OnEvent(NET_Packet& P, u16 type)
     case GE_OWNERSHIP_TAKE:
     case GE_TRANSFER_TAKE: {
         P.r_u16(id);
+        if (P.r_elapsed() >= 2 && 0 == P.r_u16())
+            m_silent_take = id; // вызов скриптовых колбеков запрещен при трансфере
         CObject* O = Level().Objects.net_Find(id);
         if (!O)
         {
@@ -88,6 +90,8 @@ void CActor::OnEvent(NET_Packet& P, u16 type)
     case GE_OWNERSHIP_REJECT:
     case GE_TRANSFER_REJECT: {
         P.r_u16(id);
+        if (P.r_elapsed() >= 2 && 0 == P.r_u16())
+            m_silent_reject = id; // вызов скриптовых колбеков запрещен при трансфере
         CObject* O = Level().Objects.net_Find(id);
 
         if (!O)

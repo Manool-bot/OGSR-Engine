@@ -831,6 +831,26 @@ void CGameObject::DestroyObject()
 
 void CGameObject::shedule_Update(u32 dt)
 {
+    if (H_Parent())
+    {
+        auto* aobj = alife_object();
+
+        if (aobj && aobj->ID_Parent != H_Parent()->ID())
+        {
+            /*Msg("! #WARN(shedule_Update): for item %s client object parent = %d, but alife object parent = %d. Forcing switch cl-parent...", Name_script(), H_Parent()->ID(),
+                aobj->ID_Parent);*/
+            NET_Packet P;
+            P.write_start();
+            P.read_start();
+            P.w_u16(u16(ID()));
+            // P.w_u16 (0); // без вызова скриптового колбека
+            Level().cl_Process_Event(H_Parent()->ID(), GE_OWNERSHIP_REJECT, P);
+            P.read_start();
+            if (aobj->ID_Parent < 0xffff) // попробовать ещё раз передать сообщение
+                Level().cl_Process_Event(aobj->ID_Parent, GE_OWNERSHIP_TAKE, P); // fast sync
+        }
+    }	
+
     // Msg							("-SUB-:[%x][%s] CGameObject::shedule_Update",smart_cast<void*>(this),*cName());
     inherited::shedule_Update(dt);
     FeelTouchAddonsUpdate();

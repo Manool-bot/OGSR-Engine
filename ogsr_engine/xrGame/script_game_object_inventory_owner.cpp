@@ -328,16 +328,39 @@ void CScriptGameObject::DropItemAndTeleport(CScriptGameObject* pItem, Fvector po
     CGameObject::u_EventSend(PP);
 }
 
-//передаче вещи из своего инвентаря в инвентарь партнера
+void DirectEvent(u16 item_id, u16 owner, u16 type, bool no_cb = true)
+{
+    NET_Packet P;
+    P.write_start();
+    P.read_start();
+    P.w_u16(item_id);
+    if (no_cb)
+        P.w_u16(0);
+    Level().cl_Process_Event(owner, type, P); // direct take/reject
+}
+
+// передаче вещи из своего инвентаря в инвентарь партнера
 void CScriptGameObject::TransferItem(CScriptGameObject* pItem, CScriptGameObject* pForWho)
 {
+    if (!pItem)
+        pItem = this;
+
+    if (!pForWho) // alpet: сокращенный синтаксис по передаче объекта this
+    {
+        pForWho = pItem;
+        pItem = this;
+    }
+
     if (!pItem || !pForWho)
     {
         ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "cannot transfer NULL item");
         return;
     }
 
-    CInventoryItem* pIItem = smart_cast<CInventoryItem*>(&pItem->object());
+    CGameObject& obj = pItem->object();
+    CGameObject& who = pForWho->object();
+
+    CInventoryItem* pIItem = smart_cast<CInventoryItem*>(&obj);
 
     if (!pIItem)
     {
@@ -345,16 +368,88 @@ void CScriptGameObject::TransferItem(CScriptGameObject* pItem, CScriptGameObject
         return;
     }
 
-    // выбросить у себя
-    NET_Packet P;
-    CGameObject::u_EventGen(P, GE_TRANSFER_REJECT, object().ID());
-    P.w_u16(pIItem->object().ID());
-    CGameObject::u_EventSend(P);
+    LPCSTR szItemName = obj.Name_script();
+    CObject* source = obj.H_Parent();
+    CInventoryOwner* src_owner = smart_cast<CInventoryOwner*>(source); // если владение объектом установлено
+    CInventoryOwner* dst_owner = smart_cast<CInventoryOwner*>(&who);
 
-    // отдать партнеру
-    CGameObject::u_EventGen(P, GE_TRANSFER_TAKE, pForWho->object().ID());
-    P.w_u16(pIItem->object().ID());
-    CGameObject::u_EventSend(P);
+    __try
+    {
+        u16 ID_Parent = (u16)-1;
+        if (source)
+            ID_Parent = source->ID();
+
+        auto* aobj = obj.alife_object();
+        if (aobj)
+            ID_Parent = aobj->ID_Parent;
+
+        NET_Packet P;
+
+        if (source && ID_Parent != source->ID())
+        {
+            // Msg("! #WARN: client-server object sync mistmatch, client-parent = %d, server-parent = %d for item %s", source->ID(), ID_Parent, szItemName);
+            source = Level().Objects.net_Find(ID_Parent);
+            if (!source)
+                // return; // Manool: VS рекомендует тут __leave вместо return
+                __leave;
+            src_owner = smart_cast<CInventoryOwner*>(source);
+            DirectEvent(obj.ID(), ID_Parent, GE_OWNERSHIP_TAKE);
+        }
+
+        if (ID_Parent == who.ID())
+        {
+            Msg("! #REJECT: invalid transfer, object %s already owned by %s ", obj.Name_script(), who.Name_script());
+            // return; // Manool: VS рекомендует тут __leave вместо return
+            __leave;
+        }
+
+        if (src_owner)
+            src_owner->BeginTransfer();
+        if (dst_owner)
+            dst_owner->BeginTransfer();
+
+        // Manool: если владелец действительно станет подпрыгивать, то добавить ChangePosition
+        // Fvector pos = obj.Position();
+        // pos.y -= 100.f;
+        // obj.ChangePosition(pos); // чтобы владелец не подпрыгнул
+
+        // выбросить у себя
+        if (ID_Parent < (u16)-1 && this != pItem) // из скриптов часто подбираются "независимые" предметы
+        {
+            if (source->ID() != object().ID())
+            {
+                Msg("! #WARNING(transfer_item): owner for %s = %s, but method used for %s ", szItemName, source->Name_script(), object().Name());
+            }
+
+            // Msg("$#CONTEXT: TransferItem.reject %s from %s ", szItemName, source->Name_script());
+            CGameObject::u_EventGen(P, GE_OWNERSHIP_REJECT, ID_Parent);
+            P.w_u16(obj.ID());
+            P.w_u16(0);
+            CGameObject::u_EventSend(P);
+            if (aobj && 0xffff == aobj->ID_Parent)
+                DirectEvent(obj.ID(), ID_Parent, GE_OWNERSHIP_REJECT); // попытка ускорить события
+        }
+
+        R_ASSERT3(pItem != pForWho, "trying transfer object into self", szItemName);
+
+        // Msg("$#CONTEXT: TransferItem.take %s to %s, current owner = %d ", szItemName, who.Name_script(), int(source ? source->ID() : 0xffff));
+        // отдать партнеру
+        CGameObject::u_EventGen(P, GE_OWNERSHIP_TAKE, who.ID());
+        P.w_u16(obj.ID());
+        P.w_u16(0);
+        CGameObject::u_EventSend(P);
+        if (aobj && who.ID() == aobj->ID_Parent)
+            DirectEvent(obj.ID(), who.ID(), GE_OWNERSHIP_TAKE); // попытка ускорить события
+            Level().ClientReceive();
+            Level().ProcessGameEvents();
+    }
+    __finally
+    {
+        if (src_owner)
+            src_owner->EndTransfer();
+        if (dst_owner)
+            dst_owner->EndTransfer();
+    }
 }
 
 u32 CScriptGameObject::Money()

@@ -361,12 +361,66 @@ void CLevel::cl_Process_Event(u16 dest, u16 type, NET_Packet& P)
         Msg("! ERROR: c_EVENT[%d] : non-game-object", dest);
         return;
     }
+    if (type != GE_DESTROY_REJECT)
+    {
+        if (type == GE_DESTROY)
+            Game().OnDestroy(GO);
 
-    if (type == GE_DESTROY)
-        Game().OnDestroy(GO);
+        if (GE_OWNERSHIP_TAKE == type || GE_OWNERSHIP_REJECT == type)
+        {
+            u16 id = P.r_u16();
+            P.read_start(); // rewind
+            CObject* item = Objects.net_Find(id);
+            if (!item)
+            {
+                Msg("! #ERROR: for event type %d not found item #%d ", type, id);
+                return;
+            }
 
-    GO->OnEvent(P, type);
-}
+            if (GE_OWNERSHIP_TAKE == type && item->H_Parent() == GO)
+            {
+                // Msg("& #TRANSFER: %s already owned by %s, take event ignored", item->Name_script(), GO->Name_script());
+                return; // already parent, not need
+            }
+            if (GE_OWNERSHIP_REJECT == type && item->H_Parent() != GO)
+            {
+                // Msg("& #TRANSFER: %s not owned by %s, reject event ignored", item->Name_script(), GO->Name_script());
+                return; // already parent, not need
+            }
+        }
+
+        GO->OnEvent(P, type);
+    }
+    else
+    { // handle GE_DESTROY_REJECT here
+        u32 pos = P.r_tell();
+        u16 id = P.r_u16();
+        P.r_seek(pos);
+
+        bool ok = true;
+
+        CObject* D = Objects.net_Find(id);
+        if (0 == D)
+        {
+            Msg("! ERROR: c_EVENT[%d] : unknown dest", id);
+            ok = false;
+        }
+
+        CGameObject* GD = smart_cast<CGameObject*>(D);
+        if (!GD)
+        {
+            Msg("! ERROR: c_EVENT[%d] : non-game-object", id);
+            ok = false;
+        }
+
+        GO->OnEvent(P, GE_OWNERSHIP_REJECT);
+        if (ok)
+        {
+            Game().OnDestroy(GD);
+            GD->OnEvent(P, GE_DESTROY);
+        };
+    }
+};
 
 void CLevel::ProcessGameEvents()
 {
