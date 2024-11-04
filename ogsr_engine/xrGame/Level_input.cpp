@@ -354,19 +354,24 @@ void CLevel::IR_OnKeyboardRelease(int key)
             return;
     }
 
-    bool b_ui_exist = (pHUD && pHUD->GetUI());
-
-    if (b_ui_exist && pHUD->GetUI()->IR_OnKeyboardRelease(key))
-        return;
-
     if (Device.Paused())
-        return;
-
-    if (game && Game().OnKeyboardRelease(_curr))
         return;
 
     if ((key != DIK_LALT) && (key != DIK_RALT) && (key != DIK_F4) && Actor())
         Actor()->callback(GameObject::eOnKeyRelease)(key, _curr);
+
+    bool b_ui_exist = (pHUD && pHUD->GetUI());
+    if (b_ui_exist && pHUD->GetUI()->IR_OnKeyboardRelease(key))
+        return;
+
+    // if (Device.Paused())
+        // return;
+
+    if (game && Game().OnKeyboardRelease(_curr))
+        return;
+
+    // if ((key != DIK_LALT) && (key != DIK_RALT) && (key != DIK_F4) && Actor())
+        // Actor()->callback(GameObject::eOnKeyRelease)(key, _curr);
 
     if (b_ui_exist && HUD().GetUI()->MainInputReceiver())
         return;
