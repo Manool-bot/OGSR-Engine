@@ -59,7 +59,7 @@ void CUIInventoryWnd::ActivatePropertiesBox()
             {
                 if (!m_pInv->m_slots[slot].m_pIItem || m_pInv->m_slots[slot].m_pIItem != CurrentIItem())
                 {
-                    if (AllowPutInSlot(CurrentItem()))
+                    if (AllowPutInSlot(CurrentItem(), slot))
                     {
                         if (multi_slot && Core.Features.test(xrCore::Feature::slots_extend_menu))
                         {

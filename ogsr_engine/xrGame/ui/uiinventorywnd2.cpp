@@ -429,10 +429,6 @@ bool CUIInventoryWnd::OnItemDrop(CUICellItem* itm)
     switch (t_new)
     {
     case iwSlot: {
-
-        if (!AllowPutInSlot(itm))
-            return true;
-
         auto item = CurrentIItem();
 
         bool can_put = false;
@@ -450,6 +446,9 @@ bool CUIInventoryWnd::OnItemDrop(CUICellItem* itm)
             for (u8 i = 0; i < SLOTS_TOTAL; i++)
                 if (new_owner == GetSlotList(i))
                 {
+                    if (!AllowPutInSlot(itm, i))
+                        break;
+
                     if (item->IsPlaceable(i, i))
                     {
                         item->SetSlot(i);
@@ -516,9 +515,6 @@ bool CUIInventoryWnd::OnItemDbClick(CUICellItem* itm)
 
     case iwBag: {
 
-        if (!AllowPutInSlot(itm))
-            return true;
-
         // Пытаемся найти свободный слот из списка разрешенных.
         // Если его нету, то принудительно займет первый слот,
         // указанный в списке.
@@ -526,15 +522,23 @@ bool CUIInventoryWnd::OnItemDbClick(CUICellItem* itm)
 
         for (u8 i = 0; i < (u8)slots.size(); ++i)
         {
-            __item->SetSlot(slots[i]);
-            if (ToSlot(itm, false))
-                return true;
+            if (AllowPutInSlot(itm, i))
+            {
+                __item->SetSlot(slots[i]);
+                if (ToSlot(itm, false))
+                    return true;
+            }
         }
-        __item->SetSlot(slots.size() ? slots[0] : NO_ACTIVE_SLOT);
 
-        if (!ToSlot(itm, false))
-            if (!ToBelt(itm, false))
-                ToSlot(itm, true);
+        u8 tmp_slot = slots.size() ? slots[0] : NO_ACTIVE_SLOT;
+        if (AllowPutInSlot(itm, tmp_slot))
+        {
+            __item->SetSlot(tmp_slot);
+
+            if (!ToSlot(itm, false))
+                if (!ToBelt(itm, false))
+                    ToSlot(itm, true);
+        }
     }
     break;
 
@@ -554,7 +558,7 @@ bool CUIInventoryWnd::OnItemRButtonClick(CUICellItem* itm)
     return false;
 }
 
-bool CUIInventoryWnd::AllowPutInSlot(CUICellItem* itm)
+bool CUIInventoryWnd::AllowPutInSlot(CUICellItem* itm, u8 slot)
 {
     bool allow_put = true;
     auto item = (PIItem)itm->m_pData;
@@ -564,7 +568,7 @@ bool CUIInventoryWnd::AllowPutInSlot(CUICellItem* itm)
         luabind::functor<bool> func;
         if (ai().script_engine().functor(on_item_before_put_in_slot.c_str(), func))
         {
-            allow_put = func(item->cast_game_object()->lua_game_object());
+            allow_put = func(item->cast_game_object()->lua_game_object(), slot);
         }
     }
     return allow_put;
