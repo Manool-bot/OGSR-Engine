@@ -1710,7 +1710,7 @@ bool CWeapon::UseScopeTexture()
     return !SecondVPEnabled() && m_UIScope; // только если есть текстура прицела - для простого создания коллиматоров
 }
 
-CUIStaticItem* CWeapon::ZoomTexture()
+CUIWindow* CWeapon::ZoomTexture()
 {
     if (UseScopeTexture())
         return m_UIScope;
@@ -1964,9 +1964,8 @@ void CWeapon::OnDrawUI()
     {
         if (ZoomTexture() && !IsRotatingToZoom())
         {
-            ZoomTexture()->SetPos(0, 0);
-            ZoomTexture()->SetRect(0, 0, UI_BASE_WIDTH, UI_BASE_HEIGHT);
-            ZoomTexture()->Render();
+            ZoomTexture()->Update();
+            ZoomTexture()->Draw();
 
             //			m_UILens.Draw();
         }
