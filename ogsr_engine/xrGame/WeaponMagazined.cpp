@@ -1390,12 +1390,16 @@ void CWeaponMagazined::PlayAnimHide()
 
 void CWeaponMagazined::PlayAnimReload()
 {
+    string128 suff = "anm_reload";
+    if (allow_drum_anims)
+        xr_strconcat(suff, "anm_reload_", std::to_string(GetAmmoElapsed()).c_str());
+
     if (IsMisfire())
-        PlayHUDMotion({iAmmoElapsed == 1 ? "anm_reload_jammed_last" : "anm_reload_jammed", "anm_reload_jammed", "anm_reload_empty", "anim_reload", "anm_reload"}, true, GetState());
+        PlayHUDMotion({iAmmoElapsed == 1 ? "anm_reload_jammed_last" : "anm_reload_jammed", "anm_reload_jammed", "anm_reload_empty", "anim_reload", suff}, true, GetState());
     else if (IsPartlyReloading())
-        PlayHUDMotion({"anim_reload_partly", "anm_reload_partly", "anim_reload", "anm_reload"}, true, GetState());
+        PlayHUDMotion({"anim_reload_partly", "anm_reload_partly", "anim_reload", suff}, true, GetState());
     else
-        PlayHUDMotion({"anm_reload_empty", "anim_reload", "anm_reload"}, true, GetState());
+        PlayHUDMotion({"anm_reload_empty", "anim_reload", suff}, true, GetState());
 }
 
 const char* CWeaponMagazined::GetAnimAimName()

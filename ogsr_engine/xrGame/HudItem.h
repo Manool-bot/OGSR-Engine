@@ -269,6 +269,7 @@ public:
     //Функция из ганслингера для приблизительной коррекции разности фовов худа и мира. Так себе на самом деле, но более годных способов я не нашел.
     void CorrectDirFromWorldToHud(Fvector& dir);
     float GetLastHudFov() const { return m_nearwall_last_hud_fov; }
+    bool allow_drum_anims = false;
 
 protected:
     enum CollisionWeaponType : size_t

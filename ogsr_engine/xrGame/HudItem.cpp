@@ -57,6 +57,9 @@ void CHudItem::Load(LPCSTR section)
 
         hud_recalc_koef = READ_IF_EXISTS(pSettings, r_float, hud_sect, "hud_recalc_koef",
                                          1.35f); //На калаше при 1.35 вроде норм смотрится, другим стволам возможно придется подбирать другие значения.
+
+        if (pSettings->line_exist(hud_sect, "allow_drum_anims"))
+            allow_drum_anims = pSettings->r_bool(hud_sect, "allow_drum_anims");
     }
 
     m_animation_slot = pSettings->r_u32(section, "animation_slot");
