@@ -863,6 +863,10 @@ LPCSTR CCustomMonster::visual_name(CSE_Abstract* server_entity)
     CSE_ALifeCreatureAbstract* creature = smart_cast<CSE_ALifeCreatureAbstract*>(server_entity);
     VERIFY(creature);
 
+    creature->m_game_death_time = 0;
+    return (inherited::visual_name(server_entity));
+
+    /**
     if (creature->g_Alive())
         return (inherited::visual_name(server_entity));
 
@@ -882,6 +886,7 @@ LPCSTR CCustomMonster::visual_name(CSE_Abstract* server_entity)
     m_already_dead = true;
 
     return (pSettings->r_string(cNameSect(), "corpse_visual"));
+    **/
 }
 
 void CCustomMonster::on_enemy_change(const CEntityAlive* enemy) {}

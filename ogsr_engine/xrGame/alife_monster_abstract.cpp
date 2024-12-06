@@ -201,6 +201,8 @@ Fvector CSE_ALifeMonsterAbstract::draw_level_position() const
 
 bool CSE_ALifeMonsterAbstract::redundant() const
 {
+    return (false);
+    /**
     if (g_Alive())
         return (false);
 
@@ -219,4 +221,5 @@ bool CSE_ALifeMonsterAbstract::redundant() const
         return (false);
 
     return (true);
+    **/
 }
