@@ -50,6 +50,7 @@ void CEatableItem::Load(LPCSTR section)
 
     m_iStartPortionsNum = pSettings->r_s32(section, "eat_portions_num");
     m_fMaxPowerUpInfluence = READ_IF_EXISTS(pSettings, r_float, section, "eat_max_power", 0.0f);
+    use_for_every_item = READ_IF_EXISTS(pSettings, r_bool, section, "use_for_every_item", false);
     VERIFY(m_iPortionsNum < 10000);
 }
 

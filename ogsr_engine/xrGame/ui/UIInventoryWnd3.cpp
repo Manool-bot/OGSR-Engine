@@ -169,6 +169,9 @@ void CUIInventoryWnd::ActivatePropertiesBox()
         cnt = 9;
     PIItem iitm = (PIItem)CurrentItem()->m_pData;
 
+    if (pEatableItem && !pEatableItem->use_for_every_item)
+        cnt = 1;
+
     for (u32 i = 0; i < cnt; i++)
     {
         LPCSTR _action = NULL;

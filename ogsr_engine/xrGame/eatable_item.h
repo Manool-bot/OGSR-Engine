@@ -31,6 +31,7 @@ public:
     bool Empty() const { return m_iPortionsNum == 0; };
     virtual void ZeroAllEffects();
     void SetRadiation(float rad);
+    bool use_for_every_item = false;
 
 protected:
     //влияние при поедании вещи на параметры игрока
