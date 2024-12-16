@@ -27,6 +27,8 @@
 #include "game_object_space.h"
 #include "script_game_object.h"
 
+float movement_speed_multiplier = 1.0f;
+
 static const float s_fLandingTime1 = 0.1f; // через сколько снять флаг Landing1 (т.е. включить следующую анимацию)
 static const float s_fLandingTime2 = 0.3f; // через сколько снять флаг Landing2 (т.е. включить следующую анимацию)
 static const float s_fJumpTime = 0.3f;
@@ -371,23 +373,23 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector& vControlAccel, float& Ju
                 scale = m_fWalkAccel / scale;
                 if (bAccelerated)
                     if (mstate_real & mcBack)
-                        scale *= m_fRunBackFactor * m_fExoFactor;
+                        scale *= (m_fRunBackFactor * movement_speed_multiplier) * m_fExoFactor;
                     else
-                        scale *= m_fRunFactor * m_fExoFactor;
+                        scale *= (m_fRunFactor * movement_speed_multiplier) * m_fExoFactor;
                 else if (mstate_real & mcBack)
-                    scale *= m_fWalkBackFactor;
+                    scale *= (m_fWalkBackFactor * movement_speed_multiplier);
 
                 if (mstate_real & mcCrouch)
-                    scale *= m_fCrouchFactor;
+                    scale *= (m_fCrouchFactor * movement_speed_multiplier);
                 if (mstate_real & mcClimb)
-                    scale *= m_fClimbFactor;
+                    scale *= (m_fClimbFactor * movement_speed_multiplier);
                 if (mstate_real & mcSprint)
-                    scale *= m_fSprintFactor * m_fExoFactor;
+                    scale *= (m_fSprintFactor * movement_speed_multiplier) * m_fExoFactor;
 
                 if (mstate_real & (mcLStrafe | mcRStrafe) && !(mstate_real & mcCrouch))
                 {
                     if (bAccelerated)
-                        scale *= m_fRun_StrafeFactor * m_fExoFactor;
+                        scale *= (m_fRun_StrafeFactor * movement_speed_multiplier) * m_fExoFactor;
                     else
                         scale *= m_fWalk_StrafeFactor;
                 }

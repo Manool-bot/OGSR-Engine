@@ -75,6 +75,7 @@ extern float g_bHudAdjustDeltaRot;
 
 float adj_delta_pos = 0.0005f;
 float adj_delta_rot = 0.05f;
+extern float movement_speed_multiplier;
 //-----------------------------------------------------------
 
 extern BOOL g_enable_memory_debug;
@@ -1459,6 +1460,8 @@ void CCC_RegisterCommands()
     CMD4(CCC_Float, "hud_fov", &psHUD_FOV_def, 0.1f, 1.0f);
 
     CMD4(CCC_Float, "fov", &g_fov, 5.0f, 140.0f);
+
+    CMD4(CCC_Float, "movement_speed_multiplier", &movement_speed_multiplier, 0.0f, 2.0f);
 
     // Demo
     CMD1(CCC_DemoPlay, "demo_play");
