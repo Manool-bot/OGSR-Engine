@@ -166,6 +166,7 @@ public:
     void HideDetector(bool bFastMode);
     void ShowDetector(bool bFastMode);
     float m_fAfDetectRadius;
+    float det_discharge_step;
     virtual bool CheckCompatibility(CHudItem* itm) override;
 
     virtual u32 ef_detector_type() const override { return 1; }

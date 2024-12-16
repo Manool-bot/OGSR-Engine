@@ -216,6 +216,12 @@ void CScientificDetector::Load(LPCSTR section)
 void CScientificDetector::UpfateWork()
 {
     ui().Clear();
+    if (m_fCondition <= 0.01f)
+    {
+        m_ui->update();
+        return;
+    }
+    bool detected_object = false;
 
     auto ait_b = m_artefacts.m_ItemInfos.begin();
     auto ait_e = m_artefacts.m_ItemInfos.end();
@@ -227,6 +233,7 @@ void CScientificDetector::UpfateWork()
         if (pAf->H_Parent())
             continue;
 
+        detected_object = true;
         ui().RegisterItemToDraw(pAf->Position(), pAf->cNameSect());
 
         if (pAf->CanBeInvisible())
@@ -243,9 +250,13 @@ void CScientificDetector::UpfateWork()
 
     for (; zit_b != zit_e; ++zit_b)
     {
+        detected_object = true;
         CCustomZone* pZone = zit_b->first;
         ui().RegisterItemToDraw(pZone->Position(), pZone->cNameSect());
     }
+
+    if (detected_object && det_discharge_step && det_discharge_step > 0.0f)
+        m_fCondition -= det_discharge_step;
 
     m_ui->update();
 }

@@ -191,6 +191,7 @@ void CCustomDetector::Load(LPCSTR section)
     m_animation_slot = 7;
     inherited::Load(section);
 
+    det_discharge_step = READ_IF_EXISTS(pSettings, r_float, section, "det_discharge_step", 0.0f);
     m_fAfDetectRadius = READ_IF_EXISTS(pSettings, r_float, section, "af_radius", 30.0f);
     m_fAfVisRadius = READ_IF_EXISTS(pSettings, r_float, section, "af_vis_radius", 2.0f);
     m_fDecayRate = READ_IF_EXISTS(pSettings, r_float, section, "decay_rate", 0.f); // Alundaio
