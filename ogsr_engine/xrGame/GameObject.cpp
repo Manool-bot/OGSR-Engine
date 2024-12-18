@@ -227,6 +227,14 @@ BOOL CGameObject::net_Spawn(CSE_Abstract* DC)
         cName_set(E->name_replace());
 
     setID(E->ID);
+
+    // Manool debug
+    luabind::functor<void> lua_function;
+    bool functor_exists = ai().script_engine().functor("_G.on_game_object_net_spawn", lua_function);
+    if (functor_exists)
+        lua_function(ID());
+    // Manool debug end
+
     //	R_ASSERT(Level().Objects.net_Find(E->ID) == NULL);
 
     const CSE_Visual* visual = smart_cast<const CSE_Visual*>(E);

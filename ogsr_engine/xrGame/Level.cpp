@@ -463,6 +463,13 @@ void CLevel::ProcessGameEvents()
 
     if (!is_removing_objects())
         Device.add_to_seq_parallel(fastdelegate::MakeDelegate(this, &CLevel::ProcessGameSpawns));
+
+    // Manool debug
+    luabind::functor<void> lua_function;
+    bool functor_exists = ai().script_engine().functor("_G.on_level_process_game_events", lua_function);
+    if (functor_exists)
+        lua_function();
+    // Manool debug end
 }
 
 void CLevel::OnFrame()
