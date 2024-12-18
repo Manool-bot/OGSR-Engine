@@ -1030,7 +1030,7 @@ float CScriptGameObject::GetMaxWalkWeight() const
     float max_w = e->conditions().m_MaxWalkWeight + e->ArtefactsAddWeight();
     auto outfit = e->GetOutfit();
     if (outfit)
-        max_w += outfit->m_additional_weight;
+        max_w += iCeil(outfit->m_additional_weight * outfit->GetCondition());
 
     return max_w;
 }

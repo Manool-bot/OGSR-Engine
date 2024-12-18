@@ -462,7 +462,7 @@ bool CActorCondition::IsCantWalkWeight()
 
         CCustomOutfit* outfit = m_object->GetOutfit();
         if (outfit)
-            max_w += outfit->m_additional_weight;
+            max_w += iCeil(outfit->m_additional_weight * outfit->GetCondition());
 
         if (object().GetCarryWeight() > max_w)
             return true;

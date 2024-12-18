@@ -327,7 +327,7 @@ float CInventoryOwner::MaxCarryWeight() const
 
     const CCustomOutfit* outfit = GetOutfit();
     if (outfit)
-        ret += outfit->m_additional_weight2;
+        ret += iCeil(outfit->m_additional_weight2 * outfit->GetCondition());
 
     ret += ArtefactsAddWeight(false);
     return ret;
