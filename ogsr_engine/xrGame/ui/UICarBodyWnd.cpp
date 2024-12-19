@@ -269,13 +269,16 @@ void CUICarBodyWnd::UpdateLists()
     //Наш рюкзак
     for (const auto& inv_item : ruck_list)
     {
-        CUICellItem* itm = create_cell_item(inv_item);
-        if (inv_item->m_highlight_equipped)
+        if (AllowShowInCarBody(inv_item))
         {
-            itm->m_select_equipped = true;
-            itm->SetColor(reinterpret_cast<CInventoryItem*>(itm->m_pData)->ClrEquipped);
+            CUICellItem* itm = create_cell_item(inv_item);
+            if (inv_item->m_highlight_equipped)
+            {
+                itm->m_select_equipped = true;
+                itm->SetColor(reinterpret_cast<CInventoryItem*>(itm->m_pData)->ClrEquipped);
+            }
+            m_pUIOurBagList->SetItem(itm);
         }
-        m_pUIOurBagList->SetItem(itm);
     }
 
     ruck_list.clear();
@@ -947,4 +950,19 @@ void CUICarBodyWnd::PlaySnd(eInventorySndAction a)
 {
     if (sounds[a]._handle())
         sounds[a].play(NULL, sm_2D);
+}
+
+bool CUICarBodyWnd::AllowShowInCarBody(PIItem item)
+{
+    bool allow_show = true;
+    if (pSettings->line_exist("engine_callbacks", "actor_on_item_before_show_in_carbody"))
+    {
+        std::string on_item_before_show_in_carbody = pSettings->r_string("engine_callbacks", "actor_on_item_before_show_in_carbody");
+        luabind::functor<bool> func;
+        if (ai().script_engine().functor(on_item_before_show_in_carbody.c_str(), func))
+        {
+            allow_show = func(item->cast_game_object()->lua_game_object());
+        }
+    }
+    return allow_show;
 }
