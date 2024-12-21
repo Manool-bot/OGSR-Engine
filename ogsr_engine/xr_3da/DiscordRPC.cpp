@@ -34,7 +34,8 @@ void DiscordRPC::Init()
     if (IS_OGSR_GA)
         Discord_Initialize("934890865237839992", &nullHandlers, TRUE, nullptr);
     else
-        Discord_Initialize("777186147456778272", &nullHandlers, TRUE, nullptr);
+        // Discord_Initialize("777186147456778272", &nullHandlers, TRUE, nullptr);
+        Discord_Initialize("1319391284552798308", &nullHandlers, TRUE, nullptr);
 
     start_time = time(nullptr);
 }
