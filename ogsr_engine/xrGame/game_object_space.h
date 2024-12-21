@@ -103,6 +103,8 @@ enum ECallbackType
     eOnActorFootStep,
     eOnActorLand,
     eOnActorJump,
+    eOnActorWeaponFire,
+    eOnNPCWeaponFire,
 
     eDummy = u32(-1),
 };

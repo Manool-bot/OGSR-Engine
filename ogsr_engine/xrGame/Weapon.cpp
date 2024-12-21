@@ -2085,6 +2085,25 @@ const float& CWeapon::hit_probability() const
     return (m_hit_probability[egdNovice]);
 }
 
+// Function for callbacks added by Cribbledirge.
+void CWeapon::StateSwitchCallback(GameObject::ECallbackType actor_type, GameObject::ECallbackType npc_type)
+{
+    if (g_actor)
+    {
+        if (smart_cast<CActor*>(H_Parent())) // This is an actor.
+        {
+            Actor()->callback(actor_type)(lua_game_object() // The weapon as a game object.
+            );
+        }
+        else if (smart_cast<CEntityAlive*>(H_Parent())) // This is an NPC.
+        {
+            Actor()->callback(npc_type)(smart_cast<CEntityAlive*>(H_Parent())->lua_game_object(), // The owner of the weapon.
+                                        lua_game_object() // The weapon itself.
+            );
+        }
+    }
+}
+
 // Обновление необходимости включения второго вьюпорта +SecondVP+
 // Вызывается только для активного оружия игрока
 void CWeapon::UpdateSecondVP()

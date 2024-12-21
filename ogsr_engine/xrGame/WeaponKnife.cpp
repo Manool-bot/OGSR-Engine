@@ -228,6 +228,8 @@ void CWeaponKnife::switch2_Attacking(u32 state)
     m_attackMotionMarksAvailable = !m_current_motion_def->marks.empty();
     m_attackStart = true;
     SetPending(TRUE);
+
+    StateSwitchCallback(GameObject::eOnActorWeaponFire, GameObject::eOnNPCWeaponFire);
 }
 
 void CWeaponKnife::switch2_Idle()

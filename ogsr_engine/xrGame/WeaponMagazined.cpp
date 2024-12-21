@@ -769,6 +769,8 @@ void CWeaponMagazined::state_Fire(float dt)
 
         CheckForMisfire();
         OnShot();
+        // Do Weapon Callback.  (Cribbledirge)
+        StateSwitchCallback(GameObject::eOnActorWeaponFire, GameObject::eOnNPCWeaponFire);
 
         if (smart_cast<CWeaponBM16*>(this) && IsMisfire())
             return;
