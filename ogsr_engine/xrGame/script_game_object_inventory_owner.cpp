@@ -393,7 +393,7 @@ void CScriptGameObject::TransferItem(CScriptGameObject* pItem, CScriptGameObject
                 // return; // Manool: VS рекомендует тут __leave вместо return
                 __leave;
             src_owner = smart_cast<CInventoryOwner*>(source);
-            DirectEvent(obj.ID(), ID_Parent, GE_OWNERSHIP_TAKE);
+            DirectEvent(obj.ID(), ID_Parent, GE_TRANSFER_TAKE);
         }
 
         if (ID_Parent == who.ID())
@@ -422,24 +422,24 @@ void CScriptGameObject::TransferItem(CScriptGameObject* pItem, CScriptGameObject
             }
 
             // Msg("$#CONTEXT: TransferItem.reject %s from %s ", szItemName, source->Name_script());
-            CGameObject::u_EventGen(P, GE_OWNERSHIP_REJECT, ID_Parent);
+            CGameObject::u_EventGen(P, GE_TRANSFER_REJECT, ID_Parent);
             P.w_u16(obj.ID());
             P.w_u16(0);
             CGameObject::u_EventSend(P);
             if (aobj && 0xffff == aobj->ID_Parent)
-                DirectEvent(obj.ID(), ID_Parent, GE_OWNERSHIP_REJECT); // попытка ускорить события
+                DirectEvent(obj.ID(), ID_Parent, GE_TRANSFER_REJECT); // попытка ускорить события
         }
 
         R_ASSERT3(pItem != pForWho, "trying transfer object into self", szItemName);
 
         // Msg("$#CONTEXT: TransferItem.take %s to %s, current owner = %d ", szItemName, who.Name_script(), int(source ? source->ID() : 0xffff));
         // отдать партнеру
-        CGameObject::u_EventGen(P, GE_OWNERSHIP_TAKE, who.ID());
+        CGameObject::u_EventGen(P, GE_TRANSFER_TAKE, who.ID());
         P.w_u16(obj.ID());
         P.w_u16(0);
         CGameObject::u_EventSend(P);
         if (aobj && who.ID() == aobj->ID_Parent)
-            DirectEvent(obj.ID(), who.ID(), GE_OWNERSHIP_TAKE); // попытка ускорить события
+            DirectEvent(obj.ID(), who.ID(), GE_TRANSFER_TAKE); // попытка ускорить события
             Level().ClientReceive();
             Level().ProcessGameEvents();
     }
